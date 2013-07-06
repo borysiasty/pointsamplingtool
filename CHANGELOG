@@ -1,0 +1,39 @@
+ver 0.3.8
+Fix bug introduced in 0.3.7
+
+ver 0.3.7
+Optimizations for VRT rasters.
+Recent (0.3.6) polygon optimizations ported also to API <=1.8
+
+
+ver 0.3.6
+Optimizations for heavy datasets (bug #6350 and more)
+Massive speedup with polygon layers with QGIS >= 1.9
+Yet more QGIS API 2 changes
+
+
+ver 0.3.5
+More QGIS API 2 changes
+
+
+ver 0.3.4
+Works also with QGIS 1.9 (API 2)
+
+
+ver 0.3.3
+Basic multipoint support (only for one point in multipoint!). Using
+multipoint samples with more points in multipoints may produce wrong results.
+
+
+ver 0.3.2
+Fix wong band order in rasters
+
+
+ver 0.3.1
+bugfixes for 0.3
+
+
+ver 0.3
+Use also fields from the source layer
+
+...

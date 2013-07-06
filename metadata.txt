@@ -1,0 +1,36 @@
+# This file contains metadata for your plugin. Beginning
+# with version 1.8 this is the preferred way to supply information about a
+# plugin. The current method of embedding metadata in __init__.py will
+# be supported until version 2.0
+
+# This file should be included when you package your plugin.
+
+# Mandatory items:
+
+
+[general]
+name=Point sampling tool
+qgisMinimumVersion=1.0
+qgisMaximumVersion=1.99
+description=Samples polygon attributes and raster values from multiple layers at specified sampling points
+version=0.3.8
+
+# Optional items:
+
+# changelog=
+
+# tags are comma separated with spaces allowed
+tags=sample, point, vector, raster
+
+homepage=http://hub.qgis.org/projects/pointsamplingtool
+tracker=http://hub.qgis.org/projects/pointsamplingtool/issues
+#repository=http://hub.qgis.org/projects/pointsamplingtool/repository
+icon=pointSamplingToolIcon.png
+experimental=False
+
+# deprecated flag (applies to the whole plugin, not just a single version
+deprecated=False
+
+# Author contact information
+author=Borys Jurgiel
+email=qgis (at) borysjurgiel (dot) pl

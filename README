@@ -1,0 +1,19 @@
+The Point Sampling Tool Plugin collects polygon attributes from multiple layers 
+at specified sampling points.
+You need a point layer with locations of sampling points and at least 
+one polygon layer for probe values from (in QGIS 0.11 also rasters are supported). 
+Then the plugin creates new point layer with locations given by the sampling points 
+and attributes taken from all the underlying polygons or/and raster cells.
+
+
+
+LICENSE:
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
