@@ -1,31 +1,22 @@
-#-----------------------------------------------------------
-#
+# -*- coding: utf-8 -*-
+
+# ***************************************************************************
 # Point Sampling Tool
 #
-# A QGIS plugin for collecting polygon attributes and raster values from multiple layers at specified sampling points
+# A QGIS plugin for collecting polygon attributes and raster values
+# from multiple layers at specified sampling points
 #
-# Copyright (C) 2008-2011  Borys Jurgiel
+# Copyright (C) 2008 Borys Jurgiel
 # based on Carson Farmer's PointsInPoly plugin, Copyright (C) 2008 Carson Farmer
 #
-#-----------------------------------------------------------
-#
-# licensed under the terms of GNU GPL 2
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along
-# with this program; if not, print to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-#
-#---------------------------------------------------------------------
+# ***************************************************************************
+# *                                                                         *
+# *   This program is free software; you can redistribute it and/or modify  *
+# *   it under the terms of the GNU General Public License as published by  *
+# *   the Free Software Foundation; either version 2 of the License, or     *
+# *   (at your option) any later version.                                   *
+# *                                                                         *
+# ***************************************************************************
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -44,10 +35,10 @@ class Dialog(QDialog, Ui_Dialog):
   QDialog.__init__(self)
   self.iface = iface
   self.setupUi(self)
-  QObject.connect(self.outButton, SIGNAL("clicked()"), self.outFile)
-  QObject.connect(self.inSample, SIGNAL("currentIndexChanged ( int )"), self.updateFieldsList)
-  QObject.connect(self.inData, SIGNAL("itemSelectionChanged()"), self.updateFieldsTable)
-  QObject.connect(self.fieldsTable, SIGNAL("cellChanged(int,int)"), self.fieldNameChanged)
+  self.outButton.clicked.connect(self.outFile)
+  self.inSample.currentIndexChanged.connect(self.updateFieldsList)
+  self.inData.itemSelectionChanged.connect(self.updateFieldsTable)
+  self.fieldsTable.cellChanged.connect(self.fieldNameChanged)
   self.addToToc.setCheckState(Qt.Checked)
   mapCanvas = self.iface.mapCanvas()
   # init dictionaries of items:
@@ -59,10 +50,7 @@ class Dialog(QDialog, Ui_Dialog):
    if ( layer.type() == layer.VectorLayer ) and ( layer.geometryType() == QGis.Point ):
     # read point layers
     provider = layer.dataProvider()
-    if QGis.QGIS_VERSION_INT >= 10900:
-        fields = provider.fields()
-    else:
-        fields = provider.fields().values()
+    fields = provider.fields()
     theItem = [layer]
     for j in fields:
      theItem += [[unicode(j.name()), unicode(j.name()), False]]
@@ -71,10 +59,7 @@ class Dialog(QDialog, Ui_Dialog):
    elif ( layer.type() == layer.VectorLayer ) and ( layer.geometryType() == QGis.Polygon ):
     # read polygon layers
     provider = layer.dataProvider()
-    if QGis.QGIS_VERSION_INT >= 10900:
-        fields = provider.fields()
-    else:
-        fields = provider.fields().values()
+    fields = provider.fields()
     theItem = [layer]
     for j in fields:
      theItem += [[unicode(j.name()), unicode(j.name()), False]]
@@ -84,11 +69,11 @@ class Dialog(QDialog, Ui_Dialog):
     theItem = [layer]
     for j in range(layer.bandCount()):
      if layer.bandCount() == 1:
-      name1 = QString(layer.bandName(j+1))
-      name2 = QString(layer.name()[:10])
+      name1 = layer.bandName(j+1)
+      name2 = layer.name()[:10]
      else:
-      name1 = QString(layer.bandName(j+1))
-      name2 = QString(layer.name()[:8] + "_" + unicode(j+1))
+      name1 = layer.bandName(j+1)
+      name2 = layer.name()[:8] + "_" + unicode(j+1)
      theItem += [[name1, name2, False]]
     self.rastItems[unicode(layer.name())] = theItem
   self.updateFieldsList()
@@ -97,11 +82,11 @@ class Dialog(QDialog, Ui_Dialog):
  def updateFieldsList(self):
   self.inData.clear()
   if not self.inSample.count(): return
-  i = str(self.inSample.currentText())
+  i = self.inSample.currentText()
   for j in range(1, len(self.sampItems[i])):
     #clear previously enabled fields (as they aren't selected in the widget)
     self.sampItems[i][j][2] = False
-    self.inData.addItem(str(self.sampItems[i][0].name()) + " : " + str(self.sampItems[i][j][0]) + " (source point)")
+    self.inData.addItem(self.sampItems[i][0].name() + " : " + self.sampItems[i][j][0] + " (source point)")
 #NOT YET FINISHED - to be switched to tree rather
 #  self.inData.addItem(str(self.sampItems[i][0].name()) + " (X coordinate)")
 #  self.inData.addItem(str(self.sampItems[i][0].name()) + " (Y coordinate)")
@@ -121,7 +106,7 @@ class Dialog(QDialog, Ui_Dialog):
  def updateFieldsTable(self): # called after selection changing
   # mark selected point items
   n=0
-  i = str(self.inSample.currentText())
+  i = self.inSample.currentText()
   for j in range(1, len(self.sampItems[i])):
     if self.inData.isItemSelected(self.inData.item(n)):
       self.sampItems[i][j][2] = True
@@ -148,7 +133,7 @@ class Dialog(QDialog, Ui_Dialog):
   self.fields = []
   n = 0
   self.fieldsTable.setRowCount(0)
-  i = str(self.inSample.currentText())
+  i = self.inSample.currentText()
   for j in range(1, len(self.sampItems[i])):
    if self.sampItems[i][j][2]:
     self.fields += [["point",i,j]]
@@ -218,9 +203,9 @@ class Dialog(QDialog, Ui_Dialog):
   fileDialog.setConfirmOverwrite(False)
   outName = fileDialog.getSaveFileName(self, "Output Shapefile",".", "Shapefiles (*.shp)")
   outPath = QFileInfo(outName).absoluteFilePath()
-  if outPath.right(4) != ".shp":
+  if not outPath.upper().endswith(".SHP"):
    outPath = outPath + ".shp"
-  if not outName.isEmpty():
+  if outName:
    self.outShape.clear()
    self.outShape.insert(outPath)
 
@@ -257,12 +242,10 @@ class Dialog(QDialog, Ui_Dialog):
    self.statusLabel.setText("Processing the output file name...")
    self.repaint()
    outPath = self.outShape.text()
-   if outPath.contains("\\"):
-    outName = outPath.right((outPath.length() - outPath.lastIndexOf("\\")) - 1)
-   else:
-    outName = outPath.right((outPath.length() - outPath.lastIndexOf("/")) - 1)
-   if outName.endsWith(".shp"):
-    outName = outName.left(outName.length() - 4)
+   outPath = outPath.replace("\\","/")
+   outName = QFileInfo(outPath).fileName()
+   if outName.upper().endswith(".SHP"):
+    outName = outName[:-4]
    else:
     outPath = outPath + ".shp" # When only layer name is given, create it in current folder instead of in individual folders.
    oldFile = QFile(outPath)
@@ -298,16 +281,9 @@ class Dialog(QDialog, Ui_Dialog):
     pointLayer = self.sampItems[unicode(self.inSample.currentText())][0]
     pointProvider = pointLayer.dataProvider()
     allAttrs = pointProvider.attributeIndexes()
-    if QGis.QGIS_VERSION_INT >= 10900:
-      pass
-    else:
-      pointProvider.select(allAttrs)
     sRs = pointProvider.crs()
     # create destination layer: first create list of selected fields
-    if QGis.QGIS_VERSION_INT >= 10900:
-        fieldList = QgsFields()
-    else:
-        fieldList = {}
+    fieldList = QgsFields()
     for i in range(len(self.fields)):
         if self.fields[i][0] == "point": #copying fields from source layer
             field = pointProvider.fields()[pointProvider.fieldNameIndex(self.sampItems[self.fields[i][1]][self.fields[i][2]][0])]
@@ -320,10 +296,7 @@ class Dialog(QDialog, Ui_Dialog):
         else: #creating fields for raster layers
             field = QgsField(self.rastItems[self.fields[i][1]][self.fields[i][2]][1], QVariant.Double, "real", 20, 5, "")
             ##### Better data type fit will be implemented in next versions
-        if QGis.QGIS_VERSION_INT >= 10900:
-            fieldList.append(field)
-        else:
-            fieldList[i] = field
+        fieldList.append(field)
     # create destination layer
     writer = QgsVectorFileWriter(outPath, "UTF-8", fieldList, pointProvider.geometryType(), sRs)
     self.statusLabel.setText("Writing data to the new layer...")
@@ -332,124 +305,67 @@ class Dialog(QDialog, Ui_Dialog):
     pointFeat = QgsFeature()
     np = 0
     snp = pointProvider.featureCount()
-    if QGis.QGIS_VERSION_INT >= 10900:
-            for pointFeat in pointProvider.getFeatures():
-                np += 1
-                if snp<100 or ( snp<5000 and ( np // 10.0 == np / 10.0 ) ) or ( np // 100.0 == np / 100.0 ): # display each or every 10th or every 100th point:
-                    self.statusLabel.setText("Processing point %s of %s" % (np, snp))
-                    self.repaint()
-                # convert multipoint[0] to point
-                pointGeom = pointFeat.geometry()
-                if pointGeom.wkbType() == QGis.WKBMultiPoint:
-                    pointPoint = pointGeom.asMultiPoint()[0]
+    for pointFeat in pointProvider.getFeatures():
+        np += 1
+        if snp<100 or ( snp<5000 and ( np // 10.0 == np / 10.0 ) ) or ( np // 100.0 == np / 100.0 ): # display each or every 10th or every 100th point:
+            self.statusLabel.setText("Processing point %s of %s" % (np, snp))
+            self.repaint()
+        # convert multipoint[0] to point
+        pointGeom = pointFeat.geometry()
+        if pointGeom.wkbType() == QGis.WKBMultiPoint:
+            pointPoint = pointGeom.asMultiPoint()[0]
+        else:
+            pointPoint = pointGeom.asPoint()
+        outFeat = QgsFeature()
+        outFeat.setGeometry(pointGeom)
+        # ...and next loop inside: field after field
+        bBox = QgsRectangle(pointPoint.x()-0.001,pointPoint.y()-0.001,pointPoint.x()+0.001,pointPoint.y()+0.001) # reuseable rectangle buffer around the point feature
+        previousPolyLayer = None  # reuse previous feature if it's still the same layer
+        previousPolyFeat = None   # reuse previous feature if it's still the same layer
+        previousRastLayer = None  # reuse previous raster multichannel sample if it's still the same layer
+        previousRastSample = None # reuse previous raster multichannel sample if it's still the same layer
+        attrs = []
+        for i in range(len(self.fields)):
+            field = self.fields[i]
+            if field[0] == "point":
+                attr = pointFeat.attributes()[pointProvider.fieldNameIndex(self.sampItems[field[1]][field[2]][0])]
+                attrs += [attr]
+            elif field[0] == "poly":
+                polyLayer = self.polyItems[field[1]][0]
+                polyProvider = polyLayer.dataProvider()
+                if polyLayer == previousPolyLayer:
+                    polyFeat = previousPolyFeat
                 else:
-                    pointPoint = pointGeom.asPoint()
-                outFeat = QgsFeature()
-                outFeat.setGeometry(pointGeom)
-                # ...and next loop inside: field after field
-                bBox = QgsRectangle(pointPoint.x()-0.001,pointPoint.y()-0.001,pointPoint.x()+0.001,pointPoint.y()+0.001) # reuseable rectangle buffer around the point feature
-                previousPolyLayer = None  # reuse previous feature if it's still the same layer
-                previousPolyFeat = None   # reuse previous feature if it's still the same layer
-                previousRastLayer = None  # reuse previous raster multichannel sample if it's still the same layer
-                previousRastSample = None # reuse previous raster multichannel sample if it's still the same layer
-                attrs = []
-                for i in range(len(self.fields)):
-                    field = self.fields[i]
-                    if field[0] == "point":
-                        attr = pointFeat.attributes()[pointProvider.fieldNameIndex(self.sampItems[field[1]][field[2]][0])]
-                        attrs += [attr]
-                    elif field[0] == "poly":
-                        polyLayer = self.polyItems[field[1]][0]
-                        polyProvider = polyLayer.dataProvider()
-                        if polyLayer == previousPolyLayer:
-                            polyFeat = previousPolyFeat
-                        else:
-                            polyFeat = None
-                            pointGeom = QgsGeometry().fromPoint(pointPoint)
-                            for iFeat in polyProvider.getFeatures(QgsFeatureRequest().setFilterRect(bBox)):
-                                if pointGeom.intersects(iFeat.geometry()):
-                                    polyFeat = iFeat
-                        if polyFeat:
-                            attr = polyFeat.attributes()[polyProvider.fieldNameIndex(self.polyItems[field[1]][field[2]][0])]
-                        else:
-                            attr = None
-                        attrs += [attr] #only last one if more polygons overlaps!! This way we avoid attribute list overflow
-                        previousPolyLayer = polyLayer
-                        previousPolyFeat = polyFeat
-                    else: # field source is raster
-                        rastLayer = self.rastItems[field[1]][0]
-                        if rastLayer == previousRastLayer:
-                            rastSample = previousRastSample
-                        else:
-###########                            rastSample = rastLayer.dataProvider().identify(pointPoint, QgsRasterDataProvider.IdentifyFormatValue).results() # API 2
-                            rastSample = rastLayer.dataProvider().identify(pointPoint) # API 2
-                        try:
-                            attr = float(rastSample[self.rastItems[field[1]][field[2]][0]]) ##### !! float() - I HAVE TO IMPLEMENT RASTER TYPE HANDLING!!!!
-                        except: # point is out of raster extent
-                            attr = None
-                        attrs += [QVariant(attr)]
-                        previousRastLayer = rastLayer
-                        previousRastSample = rastSample
-                outFeat.initAttributes(len(attrs))
-                outFeat.setAttributes(attrs)
-                writer.addFeature(outFeat)
-    else:
-            while pointProvider.nextFeature(pointFeat):
-                np += 1
-                if snp<100 or ( snp<5000 and ( np // 10.0 == np / 10.0 ) ) or ( np // 100.0 == np / 100.0 ): # display each or every 10th or every 100th point:
-                    self.statusLabel.setText("Processing point %s of %s" % (np, snp))
-                    self.repaint()
-                pointGeom = pointFeat.geometry()
-                if pointGeom.wkbType() == QGis.WKBMultiPoint:
-                    pointPoint = pointGeom.asMultiPoint()[0]
+                    polyFeat = None
+                    pointGeom = QgsGeometry().fromPoint(pointPoint)
+                    for iFeat in polyProvider.getFeatures(QgsFeatureRequest().setFilterRect(bBox)):
+                        if pointGeom.intersects(iFeat.geometry()):
+                            polyFeat = iFeat
+                if polyFeat:
+                    attr = polyFeat.attributes()[polyProvider.fieldNameIndex(self.polyItems[field[1]][field[2]][0])]
                 else:
-                    pointPoint = pointGeom.asPoint()
-                outFeat = QgsFeature()
-                outFeat.setGeometry(pointGeom)
-                # ...and next loop inside: field after field
-                previousPolyLayer = None  # reuse previous feature if it's still the same layer
-                previousPolyFeat = None   # reuse previous feature if it's still the same layer
-                previousRastLayer = None  # reuse previous raster multichannel sample if it's still the same layer
-                previousRastSample = None # reuse previous raster multichannel sample if it's still the same layer
-                for i in range(len(self.fields)):
-                    field = self.fields[i]
-                    if field[0] == "point":
-                        attr = pointFeat.attributeMap()[pointProvider.fieldNameIndex(self.sampItems[field[1]][field[2]][0])]
-                        outFeat.addAttribute(i, QVariant(attr))
-                    elif field[0] == "poly":
-                        polyLayer = self.polyItems[field[1]][0]
-                        if polyLayer == previousPolyLayer:
-                            polyFeat = previousPolyFeat
-                        else:
-                            tmpFeat = QgsFeature()
-                            polyFeat = None
-                            polyProvider = polyLayer.dataProvider()
-                            polyProvider.select(polyProvider.attributeIndexes())
-                            found = False
-                            while not found and polyProvider.nextFeature(tmpFeat):
-                                if pointFeat.geometry().intersects(tmpFeat.geometry()):
-                                    polyFeat = tmpFeat
-                                    found = True
-                        if polyFeat:
-                            attr = polyFeat.attributeMap()[polyProvider.fieldNameIndex(self.polyItems[field[1]][field[2]][0])]
-                            outFeat.addAttribute(i, QVariant(attr))
-                            previousPolyLayer = polyLayer
-                            previousPolyFeat = polyFeat
-                    else: # field source is raster
-                        rastLayer = self.rastItems[field[1]][0]
-                        if rastLayer == previousRastLayer:
-                            rastSample = previousRastSample
-                        else:
-                            rastSample = rastLayer.identify(pointPoint)[1] # API <= 1.8
-                        try:
-                            ## attr = float(ident.values()[nr-1])
-                            attr = float(rastSample[self.rastItems[field[1]][field[2]][0]]) ##### !! float() - I HAVE TO IMPLEMENT RASTER TYPE HANDLING!!!!
-                            outFeat.addAttribute(i,QVariant(attr))
-                        except: # point is out of raster extent
-                            pass
-                        previousRastLayer = rastLayer
-                        previousRastSample = rastSample
-                writer.addFeature(outFeat)
+                    attr = None
+                attrs += [attr] #only last one if more polygons overlaps!! This way we avoid attribute list overflow
+                previousPolyLayer = polyLayer
+                previousPolyFeat = polyFeat
+            else: # field source is raster
+                rastLayer = self.rastItems[field[1]][0]
+                if rastLayer == previousRastLayer:
+                    rastSample = previousRastSample
+                else:
+                    rastSample = rastLayer.dataProvider().identify(pointPoint, QgsRaster.IdentifyFormatValue).results()
+                try:
+                    #bandName = self.rastItems[field[1]][field[2]][0] #depreciated
+                    bandNo = field[2]
+                    attr = float(rastSample[bandNo]) ##### !! float() - I HAVE TO IMPLEMENT RASTER TYPE HANDLING!!!!
+                except: # point is out of raster extent
+                    attr = None
+                attrs += [attr]
+                previousRastLayer = rastLayer
+                previousRastSample = rastSample
+        outFeat.initAttributes(len(attrs))
+        outFeat.setAttributes(attrs)
+        writer.addFeature(outFeat)
 
     del writer
     self.statusLabel.setText("The new layer has been created.")

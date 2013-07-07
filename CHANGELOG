@@ -1,4 +1,8 @@
-ver 0.3.8
+ver 0.4
+First Version for QGIS 2
+
+
+ver 0.3.8  (The last version for QGIS 1.x)
 Fix bug introduced in 0.3.7
 
 ver 0.3.7
@@ -9,15 +13,15 @@ Recent (0.3.6) polygon optimizations ported also to API <=1.8
 ver 0.3.6
 Optimizations for heavy datasets (bug #6350 and more)
 Massive speedup with polygon layers with QGIS >= 1.9
-Yet more QGIS API 2 changes
+Yet more QGIS API 1.9 changes
 
 
 ver 0.3.5
-More QGIS API 2 changes
+More QGIS API 1.9 changes
 
 
 ver 0.3.4
-Works also with QGIS 1.9 (API 2)
+Works also with QGIS 1.9
 
 
 ver 0.3.3

@@ -27,33 +27,6 @@
 #
 #---------------------------------------------------------------------
 
-def name():
-    return 'Point sampling tool'
-
-def description():
-    return 'Samples polygon attributes and raster values from multiple layers at specified sampling points'
-
-def version():
-    return 'Version 0.3.8'
-
-def qgisMinimumVersion():
-    return '1.0'
-
-def icon():
-    return "pointSamplingToolIcon.png"
-
-def authorName():
-    return 'Borys Jurgiel'
-
-def author():
-    return auhorName()
-
-def homepage():
-    return 'http://hub.qgis.org/projects/pointsamplingtool'
-
-def email():
-    return 'qgis (at) borysjurgiel (dot) pl'
-
 def classFactory(iface):
     from pointSamplingTool import pointSamplingTool
     return pointSamplingTool(iface)

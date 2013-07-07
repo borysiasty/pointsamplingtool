@@ -10,10 +10,10 @@
 
 [general]
 name=Point sampling tool
-qgisMinimumVersion=1.0
-qgisMaximumVersion=1.99
 description=Samples polygon attributes and raster values from multiple layers at specified sampling points
-version=0.3.8
+description[pl]=Próbkuje atrybuty poligonów i/lub wartości rastra (również z wielu warstw naraz) w podanych punktach.
+version=0.4
+qgisMinimumVersion=2.0
 
 # Optional items:
 
@@ -24,7 +24,8 @@ tags=sample, point, vector, raster
 
 homepage=http://hub.qgis.org/projects/pointsamplingtool
 tracker=http://hub.qgis.org/projects/pointsamplingtool/issues
-#repository=http://hub.qgis.org/projects/pointsamplingtool/repository
+repository=http://github.com/borysiasty/pointsamplingtool
+
 icon=pointSamplingToolIcon.png
 experimental=False
 
