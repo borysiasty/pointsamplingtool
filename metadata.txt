@@ -12,7 +12,7 @@
 name=Point sampling tool
 description=Samples polygon attributes and raster values from multiple layers at specified sampling points
 description[pl]=Próbkuje atrybuty poligonów i/lub wartości rastra (również z wielu warstw naraz) w podanych punktach.
-version=0.4
+version=0.4.1
 qgisMinimumVersion=2.0
 
 # Optional items:

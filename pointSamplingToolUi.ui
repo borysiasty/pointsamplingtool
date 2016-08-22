@@ -78,7 +78,7 @@
             <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
            </property>
            <property name="selectionMode">
-            <enum>QAbstractItemView::MultiSelection</enum>
+            <enum>QAbstractItemView::ExtendedSelection</enum>
            </property>
            <property name="viewMode">
             <enum>QListView::ListMode</enum>
@@ -187,9 +187,7 @@
           <cursorShape>ArrowCursor</cursorShape>
          </property>
          <property name="text">
-          <string>The Point Sampling Tool Plugin collects polygon attributes and raster values from multiple layers at specified sampling points. You need a point layer with locations of sampling points and at least one polygon or raster layer to probe values from. The plugin creates a new point layer with locations given by the sampling points and attributes taken from all the underlying polygons or/and raster cells.
-
-NOTE: This tool is not compatible with mulitipoint sources, unless each multipoint contains exactly one point. Using multipoint samples that contain more points in multipoints may produce unreliable results.</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The Point Sampling Tool Plugin collects polygon attributes and raster values from multiple layers at specified sampling points. You need a point layer with locations of sampling points and at least one polygon or raster layer to probe values from. The plugin creates a new point layer with locations given by the sampling points and attributes taken from all the underlying polygons or/and raster cells.&lt;/p&gt;&lt;p&gt;Please use Control and Shift keys in order to select multiple columns and bands.&lt;/p&gt;&lt;p&gt;NOTE: This tool is not compatible with mulitipoint sources, unless each multipoint contains exactly one point. Using multipoint samples that contain more points in multipoints may produce unreliable results.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="textFormat">
           <enum>Qt::AutoText</enum>

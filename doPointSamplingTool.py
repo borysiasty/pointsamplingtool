@@ -18,11 +18,13 @@
 # *                                                                         *
 # ***************************************************************************
 
+import os
+from PyQt4 import uic
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-from pointSamplingToolUi import Ui_Dialog
 
+Ui_Dialog = uic.loadUiType(os.path.join(os.path.dirname(__file__), 'pointSamplingToolUi.ui'))[0]
 
 class Dialog(QDialog, Ui_Dialog):
 
