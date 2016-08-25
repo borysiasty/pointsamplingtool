@@ -23,8 +23,8 @@ qgisMinimumVersion=2.0
 # tags are comma separated with spaces allowed
 tags=sample, point, vector, raster
 
-homepage=http://hub.qgis.org/projects/pointsamplingtool
-tracker=http://hub.qgis.org/projects/pointsamplingtool/issues
+homepage=http://github.com/borysiasty/pointsamplingtool
+tracker=http://github.com/borysiasty/pointsamplingtool/issues
 repository=http://github.com/borysiasty/pointsamplingtool
 
 icon=pointSamplingToolIcon.png
@@ -35,4 +35,4 @@ deprecated=False
 
 # Author contact information
 author=Borys Jurgiel
-email=qgis (at) borysjurgiel (dot) pl
+email=qgis@borysjurgiel.pl
