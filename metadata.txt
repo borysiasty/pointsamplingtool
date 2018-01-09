@@ -13,7 +13,7 @@ name=Point sampling tool
 description=Samples polygon attributes and raster values from multiple layers at specified sampling points
 description[pl]=Próbkuje atrybuty poligonów i/lub wartości rastra (również z wielu warstw naraz) w podanych punktach.
 about=The Point Sampling Tool Plugin collects polygon attributes and raster values from multiple layers at specified sampling points. You need a point layer with locations of sampling points and at least one polygon or raster layer to probe values from. The plugin creates a new point layer with locations given by the sampling points and attributes taken from all the underlying polygons or/and raster cells. Please use Control and Shift keys in order to select multiple columns and bands. Note this tool is not compatible with mulitipoint sources, unless each multipoint contains exactly one point. Using multipoint samples that contain more points in multipoints may produce unreliable results.
-version=0.4.1
+version=0.4.2
 qgisMinimumVersion=2.0
 
 # Optional items:

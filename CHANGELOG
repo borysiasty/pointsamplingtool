@@ -1,3 +1,7 @@
+ver 0.4.2
+Provide an error message if there is a CRS mismatch. Fixes #5
+
+
 ver 0.4.1
 Multiselection of columns and bands with Ctrl and Shift keys
 
@@ -8,6 +12,7 @@ First Version for QGIS 2
 
 ver 0.3.8  (The last version for QGIS 1.x)
 Fix bug introduced in 0.3.7
+
 
 ver 0.3.7
 Optimizations for VRT rasters.

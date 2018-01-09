@@ -225,21 +225,49 @@ class Dialog(QDialog, Ui_Dialog):
    for j in range(1, len(self.rastItems[i])):
     if self.rastItems[i][j][2]:
      nothingSelected = False
+
   if self.inSample.currentText() == "":
    self.tabWidget.setCurrentIndex(0)
    QMessageBox.information(self, "Point Sampling Tool", "Please select vector layer containing the sampling points")
-  elif nothingSelected:
+   return
+  if nothingSelected:
    self.tabWidget.setCurrentIndex(0)
-   QMessageBox.information(self, "Point Sampling Tool", "Please select at least one polygon or raster layer")
-  elif self.outShape.text() == "":
+   QMessageBox.information(self, "Point Sampling Tool", "Please select at least one polygon attribute or raster band")
+   return
+  if self.outShape.text() == "":
    self.tabWidget.setCurrentIndex(0)
    QMessageBox.information(self, "Point Sampling Tool", "Please specify output shapefile name")
+   return
   # check if destination field names are unique
-  elif not self.testFieldsNames(self.fields):
+  if not self.testFieldsNames(self.fields):
    self.updateFieldsTable()
    self.tabWidget.setCurrentIndex(1)
    QMessageBox.warning(self, "Point Sampling Tool", "At least two field names are the same!\nPlease type unique names.")
-  else:
+   return
+
+  # Check if there a CRS mismatch
+  pointLayerSrid = self.sampItems.values()[0][0].crs().postgisSrid()
+  msg = u'''<html>All layers must have the same coordinate refere system. The <b>%s</b> layer seems to have different CRS id (<b>%d</b>)
+            than the point layer (<b>%d</b>). If they are two different CRSes, you need to reproject one of the layers first,
+            otherwise results will be wrong.<br/>
+            However, if you are sure both CRSes are the same, and they are just improperly recognized, you can safely continue.
+            Do you want to continue?</html>'''
+  for i in self.polyItems:
+   for j in range(1, len(self.polyItems[i])):
+    if self.polyItems[i][j][2]:
+     layerSrid = self.polyItems[i][0].crs().postgisSrid()
+     if layerSrid != pointLayerSrid:
+      if QMessageBox.question(self, "Point Sampling Tool: layer CRS mismatch!", msg % (i, layerSrid, pointLayerSrid), QMessageBox.Yes | QMessageBox.No) != QMessageBox.Yes:
+       return
+  for i in self.rastItems:
+   for j in range(1, len(self.rastItems[i])):
+    if self.rastItems[i][j][2]:
+     layerSrid = self.rastItems[i][0].crs().postgisSrid()
+     if layerSrid != pointLayerSrid:
+      if QMessageBox.question(self, "Point Sampling Tool: layer CRS mismatch!", msg % (i, layerSrid, pointLayerSrid), QMessageBox.Yes | QMessageBox.No) != QMessageBox.Yes:
+       return
+
+  if True:
    # all tests passed! Let's go on
    self.statusLabel.setText("Processing the output file name...")
    self.repaint()
