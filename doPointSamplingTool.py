@@ -18,10 +18,13 @@
 # *                                                                         *
 # ***************************************************************************
 
+from builtins import str
+from builtins import range
+
 import os
-from PyQt4 import uic
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt import uic
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from qgis.core import *
 
 Ui_Dialog = uic.loadUiType(os.path.join(os.path.dirname(__file__), 'pointSamplingToolUi.ui'))[0]
@@ -55,8 +58,8 @@ class Dialog(QDialog, Ui_Dialog):
     fields = provider.fields()
     theItem = [layer]
     for j in fields:
-     theItem += [[unicode(j.name()), unicode(j.name()), False]]
-    self.sampItems[unicode(layer.name())] = theItem
+     theItem += [[str(j.name()), str(j.name()), False]]
+    self.sampItems[str(layer.name())] = theItem
     self.inSample.addItem(layer.name())
    elif ( layer.type() == layer.VectorLayer ) and ( layer.geometryType() == QGis.Polygon ):
     # read polygon layers
@@ -64,8 +67,8 @@ class Dialog(QDialog, Ui_Dialog):
     fields = provider.fields()
     theItem = [layer]
     for j in fields:
-     theItem += [[unicode(j.name()), unicode(j.name()), False]]
-    self.polyItems[unicode(layer.name())] = theItem
+     theItem += [[str(j.name()), str(j.name()), False]]
+    self.polyItems[str(layer.name())] = theItem
    elif layer.type() == layer.RasterLayer:
     # read raster layers
     theItem = [layer]
@@ -75,9 +78,9 @@ class Dialog(QDialog, Ui_Dialog):
       name2 = layer.name()[:10]
      else:
       name1 = layer.bandName(j+1)
-      name2 = layer.name()[:8] + "_" + unicode(j+1)
+      name2 = layer.name()[:8] + "_" + str(j+1)
      theItem += [[name1, name2, False]]
-    self.rastItems[unicode(layer.name())] = theItem
+    self.rastItems[str(layer.name())] = theItem
   self.updateFieldsList()
 
 
@@ -95,10 +98,10 @@ class Dialog(QDialog, Ui_Dialog):
 
   for i in self.polyItems:
    for j in range(1, len(self.polyItems[i])):
-    self.inData.addItem(unicode(self.polyItems[i][0].name()) + " : " + unicode(self.polyItems[i][j][0]) + " (polygon)")
+    self.inData.addItem(str(self.polyItems[i][0].name()) + " : " + str(self.polyItems[i][j][0]) + " (polygon)")
   for i in self.rastItems:
    for j in range(1, len(self.rastItems[i])):
-    self.inData.addItem(unicode(self.rastItems[i][0].name()) + " : "+ unicode(self.rastItems[i][j][0]) + " (raster)")
+    self.inData.addItem(str(self.rastItems[i][0].name()) + " : "+ str(self.rastItems[i][j][0]) + " (raster)")
   self.updateFieldsTable()
   self.repaint()
 
@@ -140,30 +143,30 @@ class Dialog(QDialog, Ui_Dialog):
    if self.sampItems[i][j][2]:
     self.fields += [["point",i,j]]
     self.fieldsTable.setRowCount(n+1)
-    cell = QTableWidgetItem(unicode(self.sampItems[i][0].name()) + " : " + unicode(self.sampItems[i][j][0]))
+    cell = QTableWidgetItem(str(self.sampItems[i][0].name()) + " : " + str(self.sampItems[i][j][0]))
     cell.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
     self.fieldsTable.setItem(n,0,cell)
-    self.fieldsTable.setItem(n,1,QTableWidgetItem(unicode(self.sampItems[i][j][1])))
+    self.fieldsTable.setItem(n,1,QTableWidgetItem(str(self.sampItems[i][j][1])))
     n += 1
   for i in self.polyItems:
    for j in range(1, len(self.polyItems[i])):
     if self.polyItems[i][j][2]:
      self.fields += [["poly",i,j]]
      self.fieldsTable.setRowCount(n+1)
-     cell = QTableWidgetItem(unicode(self.polyItems[i][0].name()) + " : " + unicode(self.polyItems[i][j][0]))
+     cell = QTableWidgetItem(str(self.polyItems[i][0].name()) + " : " + str(self.polyItems[i][j][0]))
      cell.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
      self.fieldsTable.setItem(n,0,cell)
-     self.fieldsTable.setItem(n,1,QTableWidgetItem(unicode(self.polyItems[i][j][1])))
+     self.fieldsTable.setItem(n,1,QTableWidgetItem(str(self.polyItems[i][j][1])))
      n += 1
   for i in self.rastItems:
    for j in range(1, len(self.rastItems[i])):
     if self.rastItems[i][j][2]:
      self.fields += [["rast",i,j]]
      self.fieldsTable.setRowCount(n+1)
-     cell = QTableWidgetItem(unicode(self.rastItems[i][0].name()) + " : " + unicode(self.rastItems[i][j][0]))
+     cell = QTableWidgetItem(str(self.rastItems[i][0].name()) + " : " + str(self.rastItems[i][j][0]))
      cell.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
      self.fieldsTable.setItem(n,0,cell)
-     self.fieldsTable.setItem(n,1,QTableWidgetItem(unicode(self.rastItems[i][j][1])))
+     self.fieldsTable.setItem(n,1,QTableWidgetItem(str(self.rastItems[i][j][1])))
      n += 1
   self.fieldsTable.resizeColumnsToContents()
 
@@ -176,7 +179,7 @@ class Dialog(QDialog, Ui_Dialog):
   updatedItem = self.fieldsTable.item(n,1)
   if updatedItem == None: return 0
   # update items dictionaries
-  updatedText = unicode(updatedItem.text())
+  updatedText = str(updatedItem.text())
   if self.fields[n][0] == "point":
    self.sampItems[self.fields[n][1]][self.fields[n][2]][1] = updatedText[:10]
   elif self.fields[n][0] == "poly":
@@ -246,8 +249,9 @@ class Dialog(QDialog, Ui_Dialog):
    return
 
   # Check if there a CRS mismatch
-  pointLayerSrid = self.sampItems.values()[0][0].crs().postgisSrid()
-  msg = u'''<html>All layers must have the same coordinate refere system. The <b>%s</b> layer seems to have different CRS id (<b>%d</b>)
+
+  pointLayerSrid = list(self.sampItems.values())[0][0].crs().postgisSrid()
+  msg = '''<html>All layers must have the same coordinate refere system. The <b>%s</b> layer seems to have different CRS id (<b>%d</b>)
             than the point layer (<b>%d</b>). If they are two different CRSes, you need to reproject one of the layers first,
             otherwise results will be wrong.<br/>
             However, if you are sure both CRSes are the same, and they are just improperly recognized, you can safely continue.
@@ -293,7 +297,7 @@ class Dialog(QDialog, Ui_Dialog):
     self.outShape.clear()
     # add to the TOC if desired and possible ;)
     if self.addToToc.checkState() == Qt.Checked:
-     self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
+     self.vlayer = QgsVectorLayer(outPath, str(outName), "ogr")
      if self.vlayer.isValid():
       if hasattr( QgsMapLayerRegistry.instance(), 'addMapLayers' ):
             QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
@@ -308,7 +312,7 @@ class Dialog(QDialog, Ui_Dialog):
 
  def sampling(self, outPath): # main process
     # open sampling points layer
-    pointLayer = self.sampItems[unicode(self.inSample.currentText())][0]
+    pointLayer = self.sampItems[str(self.inSample.currentText())][0]
     pointProvider = pointLayer.dataProvider()
     allAttrs = pointProvider.attributeIndexes()
     sRs = pointProvider.crs()

@@ -18,14 +18,15 @@
 # *                                                                         *
 # ***************************************************************************
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from builtins import object
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from qgis.core import *
 
-import resources
-import doPointSamplingTool
+from . import resources
+from . import doPointSamplingTool
 
-class pointSamplingTool:
+class pointSamplingTool(object):
 
  def __init__(self, iface):
   self.iface = iface
