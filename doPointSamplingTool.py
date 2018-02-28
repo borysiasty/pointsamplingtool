@@ -202,14 +202,14 @@ class Dialog(QDialog, Ui_Dialog):
 
 
  def outFile(self): # by Carson Farmer 2008
-  # display file dialog for output shapefile
+  # display file dialog for output file
   self.outShape.clear()
   fileDialog = QFileDialog()
   fileDialog.setOption(QFileDialog.DontConfirmOverwrite, True)
-  outName, _ = fileDialog.getSaveFileName(self, "Output file", ".", "Shapefiles (*.shp)")
+  outName, _ = fileDialog.getSaveFileName(self, "Output file", ".", "GeoPackages(*.gpkg);;Comma separated values (*.csv);;Shapefiles (*.shp)")
   outPath = QFileInfo(outName).absoluteFilePath()
-  if not outPath.upper().endswith(".SHP"):
-   outPath = outPath + ".shp"
+  if not outPath.upper().endswith('.GPKG') and not outPath.upper().endswith('.CSV') and not outPath.upper().endswith('.SHP'):
+   outPath += '.gpkg'
   if outName:
    self.outShape.clear()
    self.outShape.insert(outPath)
@@ -239,7 +239,7 @@ class Dialog(QDialog, Ui_Dialog):
    return
   if self.outShape.text() == "":
    self.tabWidget.setCurrentIndex(0)
-   QMessageBox.information(self, "Point Sampling Tool", "Please specify output shapefile name")
+   QMessageBox.information(self, "Point Sampling Tool", "Please specify output file name")
    return
   # check if destination field names are unique
   if not self.testFieldsNames(self.fields):
@@ -277,14 +277,12 @@ class Dialog(QDialog, Ui_Dialog):
    self.repaint()
    outPath = self.outShape.text()
    outPath = outPath.replace("\\","/")
+   if not outPath.upper().endswith('.GPKG') and not outPath.upper().endswith('.CSV') and not outPath.upper().endswith('.SHP'):
+    outPath += '.gpkg'
    outName = QFileInfo(outPath).fileName()
-   if outName.upper().endswith(".SHP"):
-    outName = outName[:-4]
-   else:
-    outPath = outPath + ".shp" # When only layer name is given, create it in current folder instead of in individual folders.
    oldFile = QFile(outPath)
    if oldFile.exists():
-    QMessageBox.warning(self, "Point Sampling Tool", "Cannot overwrite existing shapefile.")
+    QMessageBox.warning(self, "Point Sampling Tool", "Cannot overwrite existing file.")
     # return to filling the input fields
     self.outShape.clear()
     self.statusLabel.setText("Fill up the input fields, please.")
@@ -329,7 +327,13 @@ class Dialog(QDialog, Ui_Dialog):
             ##### Better data type fit will be implemented in next versions
         fieldList.append(field)
     # create destination layer
-    writer = QgsVectorFileWriter(outPath, "UTF-8", fieldList, pointProvider.wkbType(), sRs, driverName="ESRI Shapefile")
+    if outPath.upper().endswith('SHP'):
+        driver = "ESRI Shapefile"
+    elif outPath.upper().endswith('CSV'):
+        driver = "CSV"
+    else:
+        driver = "GPKG"
+    writer = QgsVectorFileWriter(outPath, "UTF-8", fieldList, pointProvider.wkbType(), sRs, driver)
     self.statusLabel.setText("Writing data to the new layer...")
     self.repaint()
     # process point after point...
