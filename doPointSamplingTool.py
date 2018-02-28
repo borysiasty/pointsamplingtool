@@ -52,7 +52,7 @@ class Dialog(QDialog, Ui_Dialog):
   self.rastItems = {}
   for i in range(mapCanvas.layerCount()):
    layer = mapCanvas.layer(i)
-   if ( layer.type() == layer.VectorLayer ) and ( layer.geometryType() == QGis.Point ):
+   if ( layer.type() == layer.VectorLayer ) and ( layer.geometryType() == QgsWkbTypes.PointGeometry ):
     # read point layers
     provider = layer.dataProvider()
     fields = provider.fields()
@@ -61,7 +61,7 @@ class Dialog(QDialog, Ui_Dialog):
      theItem += [[str(j.name()), str(j.name()), False]]
     self.sampItems[str(layer.name())] = theItem
     self.inSample.addItem(layer.name())
-   elif ( layer.type() == layer.VectorLayer ) and ( layer.geometryType() == QGis.Polygon ):
+   elif ( layer.type() == layer.VectorLayer ) and ( layer.geometryType() == QgsWkbTypes.PolygonGeometry ):
     # read polygon layers
     provider = layer.dataProvider()
     fields = provider.fields()
@@ -113,7 +113,7 @@ class Dialog(QDialog, Ui_Dialog):
   n=0
   i = self.inSample.currentText()
   for j in range(1, len(self.sampItems[i])):
-    if self.inData.isItemSelected(self.inData.item(n)):
+    if self.inData.item(n).isSelected():
       self.sampItems[i][j][2] = True
     else:
       self.sampItems[i][j][2] = False
@@ -121,7 +121,7 @@ class Dialog(QDialog, Ui_Dialog):
   # mark selected polygon items
   for i in self.polyItems:
    for j in range(1, len(self.polyItems[i])):
-    if self.inData.isItemSelected(self.inData.item(n)):
+    if self.inData.item(n).isSelected():
      self.polyItems[i][j][2] = True
     else:
      self.polyItems[i][j][2] = False
@@ -129,7 +129,7 @@ class Dialog(QDialog, Ui_Dialog):
   # mark selected raster items (don't zero n; it's one list)
   for i in self.rastItems:
    for j in range(1, len(self.rastItems[i])):
-    if self.inData.isItemSelected(self.inData.item(n)):
+    if self.inData.item(n).isSelected():
      self.rastItems[i][j][2] = True
     else:
      self.rastItems[i][j][2] = False
@@ -205,8 +205,8 @@ class Dialog(QDialog, Ui_Dialog):
   # display file dialog for output shapefile
   self.outShape.clear()
   fileDialog = QFileDialog()
-  fileDialog.setConfirmOverwrite(False)
-  outName = fileDialog.getSaveFileName(self, "Output Shapefile",".", "Shapefiles (*.shp)")
+  fileDialog.setOption(QFileDialog.DontConfirmOverwrite, True)
+  outName, _ = fileDialog.getSaveFileName(self, "Output file", ".", "Shapefiles (*.shp)")
   outPath = QFileInfo(outName).absoluteFilePath()
   if not outPath.upper().endswith(".SHP"):
    outPath = outPath + ".shp"
@@ -299,10 +299,7 @@ class Dialog(QDialog, Ui_Dialog):
     if self.addToToc.checkState() == Qt.Checked:
      self.vlayer = QgsVectorLayer(outPath, str(outName), "ogr")
      if self.vlayer.isValid():
-      if hasattr( QgsMapLayerRegistry.instance(), 'addMapLayers' ):
-            QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
-      else:
-            QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)  # QPI <= 1.8
+      QgsProject.instance().addMapLayer(self.vlayer)
       self.statusLabel.setText("OK. The new layer has been added to the TOC.")
      else:
       self.statusLabel.setText("Error loading the created layer")
@@ -315,7 +312,7 @@ class Dialog(QDialog, Ui_Dialog):
     pointLayer = self.sampItems[str(self.inSample.currentText())][0]
     pointProvider = pointLayer.dataProvider()
     allAttrs = pointProvider.attributeIndexes()
-    sRs = pointProvider.crs()
+    sRs = pointLayer.crs()
     # create destination layer: first create list of selected fields
     fieldList = QgsFields()
     for i in range(len(self.fields)):
@@ -332,7 +329,7 @@ class Dialog(QDialog, Ui_Dialog):
             ##### Better data type fit will be implemented in next versions
         fieldList.append(field)
     # create destination layer
-    writer = QgsVectorFileWriter(outPath, "UTF-8", fieldList, pointProvider.geometryType(), sRs)
+    writer = QgsVectorFileWriter(outPath, "UTF-8", fieldList, pointProvider.wkbType(), sRs, driverName="ESRI Shapefile")
     self.statusLabel.setText("Writing data to the new layer...")
     self.repaint()
     # process point after point...
@@ -346,7 +343,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.repaint()
         # convert multipoint[0] to point
         pointGeom = pointFeat.geometry()
-        if pointGeom.wkbType() == QGis.WKBMultiPoint:
+        if pointGeom.wkbType() == QgsWkbTypes.MultiPoint:
             pointPoint = pointGeom.asMultiPoint()[0]
         else:
             pointPoint = pointGeom.asPoint()
@@ -371,7 +368,7 @@ class Dialog(QDialog, Ui_Dialog):
                     polyFeat = previousPolyFeat
                 else:
                     polyFeat = None
-                    pointGeom = QgsGeometry().fromPoint(pointPoint)
+                    pointGeom = QgsGeometry().fromPointXY(pointPoint)
                     for iFeat in polyProvider.getFeatures(QgsFeatureRequest().setFilterRect(bBox)):
                         if pointGeom.intersects(iFeat.geometry()):
                             polyFeat = iFeat
