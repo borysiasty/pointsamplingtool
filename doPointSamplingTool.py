@@ -44,7 +44,7 @@ class Dialog(QDialog, Ui_Dialog):
   self.inSample.currentIndexChanged.connect(self.updateFieldsList)
   self.inData.itemSelectionChanged.connect(self.updateFieldsTable)
   self.fieldsTable.cellChanged.connect(self.fieldNameChanged)
-  self.addToToc.setCheckState(Qt.Checked)
+  self.addToMapCanvas.setCheckState(Qt.Checked)
   mapCanvas = self.iface.mapCanvas()
   # init dictionaries of items:
   self.sampItems = {}
@@ -113,7 +113,7 @@ class Dialog(QDialog, Ui_Dialog):
   n=0
   i = self.inSample.currentText()
   for j in range(1, len(self.sampItems[i])):
-    if self.inData.item(n).isSelected():
+    if self.inData.item(n) and self.inData.item(n).isSelected():
       self.sampItems[i][j][2] = True
     else:
       self.sampItems[i][j][2] = False
@@ -121,7 +121,7 @@ class Dialog(QDialog, Ui_Dialog):
   # mark selected polygon items
   for i in self.polyItems:
    for j in range(1, len(self.polyItems[i])):
-    if self.inData.item(n).isSelected():
+    if self.inData.item(n) and self.inData.item(n).isSelected():
      self.polyItems[i][j][2] = True
     else:
      self.polyItems[i][j][2] = False
@@ -129,7 +129,7 @@ class Dialog(QDialog, Ui_Dialog):
   # mark selected raster items (don't zero n; it's one list)
   for i in self.rastItems:
    for j in range(1, len(self.rastItems[i])):
-    if self.inData.item(n).isSelected():
+    if self.inData.item(n) and self.inData.item(n).isSelected():
      self.rastItems[i][j][2] = True
     else:
      self.rastItems[i][j][2] = False
@@ -204,9 +204,9 @@ class Dialog(QDialog, Ui_Dialog):
  def outFile(self): # by Carson Farmer 2008
   # display file dialog for output file
   self.outShape.clear()
-  fileDialog = QFileDialog()
-  fileDialog.setOption(QFileDialog.DontConfirmOverwrite, True)
-  outName, _ = fileDialog.getSaveFileName(self, "Output file", ".", "GeoPackages(*.gpkg);;Comma separated values (*.csv);;Shapefiles (*.shp)")
+  outName, _ = QFileDialog().getSaveFileName(self, "Output file", ".",
+                                             "GeoPackages(*.gpkg);;Comma separated values (*.csv);;Shapefiles (*.shp)",
+                                             options = QFileDialog.DontConfirmOverwrite)
   outPath = QFileInfo(outName).absoluteFilePath()
   if not outPath.upper().endswith('.GPKG') and not outPath.upper().endswith('.CSV') and not outPath.upper().endswith('.SHP'):
    outPath += '.gpkg'
@@ -280,32 +280,51 @@ class Dialog(QDialog, Ui_Dialog):
    if not outPath.upper().endswith('.GPKG') and not outPath.upper().endswith('.CSV') and not outPath.upper().endswith('.SHP'):
     outPath += '.gpkg'
    outName = QFileInfo(outPath).fileName()
+   tableName = None
    oldFile = QFile(outPath)
    if oldFile.exists():
-    QMessageBox.warning(self, "Point Sampling Tool", "Cannot overwrite existing file.")
-    # return to filling the input fields
-    self.outShape.clear()
-    self.statusLabel.setText("Fill up the input fields, please.")
-    self.repaint()
-   else:
-    self.statusLabel.setText("Processing...")
-    self.repaint()
-    # execute main function
-    self.sampling(outPath)
-    self.outShape.clear()
-    # add to the TOC if desired and possible ;)
-    if self.addToToc.checkState() == Qt.Checked:
-     self.vlayer = QgsVectorLayer(outPath, str(outName), "ogr")
-     if self.vlayer.isValid():
-      QgsProject.instance().addMapLayer(self.vlayer)
-      self.statusLabel.setText("OK. The new layer has been added to the TOC.")
-     else:
-      self.statusLabel.setText("Error loading the created layer")
-      QMessageBox.warning(self, "Point Sampling Tool", "The new layer seems to be created, but is invalid.\nIt won't be loaded.")
+    if not outPath.upper().endswith('.GPKG'):
+     if QMessageBox.question(self, "Point Sampling Tool", "File %s already exists. Do you want to overwrite?" % outName) == QMessageBox.No:
+      # return to filling the input fields
+      self.outShape.clear()
+      self.statusLabel.setText("Fill up the input fields, please.")
+      self.repaint()
+      return
+    else:
+     msg = """Please provide <b>table name</b> for your layer.<br/>
+              <b>WARNING: </b>Database %s already exists. If you select a table existing in it, the table will be overwritten."""% outName
+     tableName, result = QInputDialog.getText(self, "Point Sampling Tool", msg, text=outName[:-5])
+     if not result:
+      # return to filling the input fields
+      self.outShape.clear()
+      self.statusLabel.setText("Fill up the input fields, please.")
+      self.repaint()
+      return
+   self.statusLabel.setText("Processing...")
+   self.repaint()
+   # execute main function
+   if not self.sampling(outPath, tableName):
+    return
+   self.outShape.clear()
+   if self.addToMapCanvas.checkState() == Qt.Checked:
+    uri = outPath
+    if tableName:
+     uri += "|layername=%s" % tableName
+    self.vlayer = QgsVectorLayer(uri, str(outName), "ogr")
+    if self.vlayer.isValid():
+     # Add the layer to the map, but first remove it if already present
+     for l in QgsProject.instance().mapLayers().values():
+      if hasattr(l, 'source') and l.source() == self.vlayer.source():
+       QgsProject.instance().removeMapLayer(l)
+     QgsProject.instance().addMapLayer(self.vlayer)
+     self.statusLabel.setText("OK. The new layer has been added to the map.")
+    else:
+     self.statusLabel.setText("Error loading the created layer")
+     QMessageBox.warning(self, "Point Sampling Tool", "The new layer seems to be created, but is invalid.\nIt won't be loaded.")
 
 
 
- def sampling(self, outPath): # main process
+ def sampling(self, outPath, tableName): # main process
     # open sampling points layer
     pointLayer = self.sampItems[str(self.inSample.currentText())][0]
     pointProvider = pointLayer.dataProvider()
@@ -326,14 +345,13 @@ class Dialog(QDialog, Ui_Dialog):
             field = QgsField(self.rastItems[self.fields[i][1]][self.fields[i][2]][1], QVariant.Double, "real", 20, 5, "")
             ##### Better data type fit will be implemented in next versions
         fieldList.append(field)
-    # create destination layer
-    if outPath.upper().endswith('SHP'):
-        driver = "ESRI Shapefile"
-    elif outPath.upper().endswith('CSV'):
-        driver = "CSV"
-    else:
-        driver = "GPKG"
-    writer = QgsVectorFileWriter(outPath, "UTF-8", fieldList, pointProvider.wkbType(), sRs, driver)
+    # create temporary memory layer (as it's currently impossible to set GPKG table name when writting features to QgsVectorFileWriter directly)
+    memLayer = QgsVectorLayer("Point?crs=epsg:%d" % sRs.postgisSrid(), 'temp layer', 'memory')
+    memLayer.startEditing()
+    for field in fieldList:
+        memLayer.addAttribute(field)
+    memLayer.commitChanges()
+
     self.statusLabel.setText("Writing data to the new layer...")
     self.repaint()
     # process point after point...
@@ -400,10 +418,28 @@ class Dialog(QDialog, Ui_Dialog):
                 previousRastSample = rastSample
         outFeat.initAttributes(len(attrs))
         outFeat.setAttributes(attrs)
-        writer.addFeature(outFeat)
+        memLayer.dataProvider().addFeature(outFeat)
 
-    del writer
-    self.statusLabel.setText("The new layer has been created.")
+    # write the memlayer to the output file
+    so=QgsVectorFileWriter.SaveVectorOptions()
+    so.fileEncoding = 'UTF-8'
+    if outPath.upper().endswith('SHP'):
+        so.driverName = "ESRI Shapefile"
+    elif outPath.upper().endswith('CSV'):
+        so.driverName = "CSV"
+    else:
+        so.driverName = "GPKG"
+        if tableName:
+            so.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
+            so.layerName = tableName
+    result, errMsg = QgsVectorFileWriter.writeAsVectorFormat(memLayer, outPath, so)
+    if result:
+     QMessageBox.critical(self, "Point sampling tool", errMsg)
+     return False
+    else:
+     del memLayer
+     self.statusLabel.setText("The new layer has been created.")
+     return True
 
 
 

@@ -114,9 +114,9 @@
            </layout>
           </item>
           <item>
-           <widget class="QCheckBox" name="addToToc">
+           <widget class="QCheckBox" name="addToMapCanvas">
             <property name="text">
-             <string>Add created layer to the TOC</string>
+             <string>Add created layer to the map</string>
             </property>
            </widget>
           </item>
@@ -302,7 +302,7 @@
   <tabstop>inData</tabstop>
   <tabstop>outShape</tabstop>
   <tabstop>outButton</tabstop>
-  <tabstop>addToToc</tabstop>
+  <tabstop>addToMapCanvas</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

@@ -1,5 +1,6 @@
 ver 0.5
 Updated to QGIS 3.0. Default output format is now GeoPackage. Optionally also CSV and SHP.
+Allow appending to existing GeoPackags and overwritting other files.
 
 ver 0.4.2
 Provide an error message if there is a CRS mismatch. Fixes #5
