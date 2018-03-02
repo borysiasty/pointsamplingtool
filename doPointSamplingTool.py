@@ -319,9 +319,11 @@ class Dialog(QDialog, Ui_Dialog):
    self.outShape.clear()
    if self.addToMapCanvas.checkState() == Qt.Checked:
     uri = outPath
+    layerName =  outName
     if tableName:
      uri += "|layername=%s" % tableName
-    self.vlayer = QgsVectorLayer(uri, str(outName), "ogr")
+     layerName += ": %s" % tableName
+    self.vlayer = QgsVectorLayer(uri, layerName, "ogr")
     if self.vlayer.isValid():
      # Add the layer to the map, but first remove it if already present
      for l in QgsProject.instance().mapLayers().values():

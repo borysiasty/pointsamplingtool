@@ -1,3 +1,7 @@
+ver 0.5.1
+Fixed wrong import.
+Add table name to the layer name when opening GeoPackage with multiple tables.
+
 ver 0.5
 Updated for QGIS 3.0.
 Default output format is now GeoPackage. Optionally also CSV and SHP.
