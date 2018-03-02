@@ -18,14 +18,25 @@
 # *                                                                         *
 # ***************************************************************************
 
-from builtins import str
-from builtins import range
+from builtins import str, range
 
 import os
-from qgis.PyQt import uic
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from qgis.core import *
+from PyQt5 import uic
+from PyQt5.QtCore import Qt, QFile, QFileInfo, QVariant
+from PyQt5.QtWidgets import QDialog, QFileDialog, QInputDialog, QMessageBox, QTableWidgetItem
+from qgis.core import (
+    QgsFields,
+    QgsField,
+    QgsFeature,
+    QgsGeometry,
+    QgsFeatureRequest,
+    QgsProject,
+    QgsRaster,
+    QgsRectangle,
+    QgsVectorFileWriter,
+    QgsVectorLayer,
+    QgsWkbTypes
+)
 
 Ui_Dialog = uic.loadUiType(os.path.join(os.path.dirname(__file__), 'pointSamplingToolUi.ui'))[0]
 
