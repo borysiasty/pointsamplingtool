@@ -32,6 +32,10 @@ class pointSamplingTool(object):
 
  def __init__(self, iface):
     self.iface = iface
+    
+    # initialize plugin directory
+    self.plugin_dir = os.path.dirname(__file__)
+    
     locale = QSettings().value('locale/userLocale')[0:2]
     locale_path = os.path.join(
         self.plugin_dir,
