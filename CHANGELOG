@@ -1,3 +1,6 @@
+ver 0.5.2
+Don't crop output field names to 10 characters if the output file is GeoPackage or CSV
+
 ver 0.5.1
 Fixed wrong import.
 Add table name to the layer name when opening GeoPackage with multiple tables.

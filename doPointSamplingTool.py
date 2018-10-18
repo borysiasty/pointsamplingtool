@@ -185,20 +185,28 @@ class Dialog(QDialog, Ui_Dialog):
 
  def fieldNameChanged(self, n): # called when any cell of the fieldsTable was modyfied
   # exit when false alarm
-  if len(self.fields) == 0: return 0
-  if self.fieldsTable.rowCount() == 0: return 0
+  if not len(self.fields):
+    return 0
+  if not self.fieldsTable.rowCount():
+    return 0
   updatedItem = self.fieldsTable.item(n,1)
-  if updatedItem == None: return 0
+  if not updatedItem:
+    return 0
   # update items dictionaries
   updatedText = str(updatedItem.text())
+  if not self.outShape.text().upper().endswith('.GPKG') or not self.outShape.text().upper().endswith('.GPKG'):
+   print('DOCINKA', updatedText, updatedText[:10])
+   updatedText = updatedText[:10]
   if self.fields[n][0] == "point":
-   self.sampItems[self.fields[n][1]][self.fields[n][2]][1] = updatedText[:10]
+   self.sampItems[self.fields[n][1]][self.fields[n][2]][1] = updatedText
   elif self.fields[n][0] == "poly":
-   self.polyItems[self.fields[n][1]][self.fields[n][2]][1] = updatedText[:10]
+   self.polyItems[self.fields[n][1]][self.fields[n][2]][1] = updatedText
   else:
-   self.rastItems[self.fields[n][1]][self.fields[n][2]][1] = updatedText[:10]
+   self.rastItems[self.fields[n][1]][self.fields[n][2]][1] = updatedText
   # cut to 10 characters if exceed
   if len(updatedText) > 10:
+   # TODO WARNING
+   BREAK! HERE IS STILL A BUG - should be called for shp only
    self.updateFieldsTable()
    QMessageBox.information(self, "Point Sampling Tool", "Name length can't exceed 10 chars, so it has been truncated.")
    # This message box may to make some confusion, if user press OK while "too long name" is still under edition.
