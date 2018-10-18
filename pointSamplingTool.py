@@ -19,7 +19,7 @@
 # ***************************************************************************
 
 from builtins import object
-from PyQt5.QtCore import QSettings, QTranslator, QCoreApplication
+from PyQt5.QtCore import QSettings, QTranslator, QCoreApplication, qVersion
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction
 from qgis.core import *
