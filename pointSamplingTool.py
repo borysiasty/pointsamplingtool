@@ -40,7 +40,7 @@ class pointSamplingTool(object):
     locale_path = os.path.join(
         self.plugin_dir,
         'i18n',
-        'AutomaTracks_{}.qm'.format(locale))
+        'pointSamplingTool_{}.qm'.format(locale))
 
     if os.path.exists(locale_path):
         self.translator = QTranslator()
