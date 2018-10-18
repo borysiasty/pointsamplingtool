@@ -26,6 +26,7 @@ from qgis.core import *
 
 from . import resources
 from . import doPointSamplingTool
+import os
 
 class pointSamplingTool(object):
 
