@@ -21,7 +21,7 @@
     <message>
         <location filename="../pointSamplingToolUi.ui" line="68"/>
         <source>Layers with fields/bands to get values from:</source>
-        <translation>Cocuhes avec les champs/bandes d'où extraire les valeurs :</translation>
+        <translation>Couches avec les champs/bandes d'où extraire les valeurs :</translation>
     </message>
     <message>
         <location filename="../pointSamplingToolUi.ui" line="99"/>
@@ -61,17 +61,17 @@
     <message>
         <location filename="../pointSamplingToolUi.ui" line="190"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The Point Sampling Tool Plugin collects polygon attributes and raster values from multiple layers at specified sampling points. You need a point layer with locations of sampling points and at least one polygon or raster layer to probe values from. The plugin creates a new point layer with locations given by the sampling points and attributes taken from all the underlying polygons or/and raster cells.&lt;/p&gt;&lt;p&gt;Please use Control and Shift keys in order to select multiple columns and bands.&lt;/p&gt;&lt;p&gt;NOTE: This tool is not compatible with mulitipoint sources, unless each multipoint contains exactly one point. Using multipoint samples that contain more points in multipoints may produce unreliable results.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Point Sampling Tool Plugin récupère les valeurs de polygones ou de raster values situé sous un échantillon de points. Une couche de point est nécessaire avec la localisation des points ainsi d'une couche de polygones ou un raster pour récupérer la valeur. Le plugin crée une nouvelle couche de point avec la localisation de la couche de points en entrée et les attributs récupérés de toutes les couches sélectionnés (polygones ou raster).&lt;/p&gt;&lt;p&gt;Veuillez utiliser les touches Ctrl et Shift pour sélectionner plusieurs champs ou bandes.&lt;/p&gt;&lt;p&gt;NOTE: Cet outils n'est pas compatible avec les couches multipoints, à moins que chacun n'en contiennent qu'un. Utiliser une couche multipoints avec plusieurs points par entité ne renvoie pas de résultats appropriés.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Point Sampling Tool Plugin récupère les valeurs de polygones ou de pixels d'un raster situé sous un échantillon de points. Une couche de points est nécessaire avec la localisation des points ainsi d'une couche de polygones ou un raster d'où récupérer les valeurs. Le plugin crée une nouvelle couche de points avec la localisation de la couche de points en entrée et les attributs récupérés de toutes les couches sélectionnées (polygones ou raster).&lt;/p&gt;&lt;p&gt;Veuillez utiliser les touches Ctrl et Shift pour sélectionner plusieurs champs ou bandes.&lt;/p&gt;&lt;p&gt;NOTE: Cet outil n'est pas compatible avec les couches multipoints, à moins que chacun n'en contiennent qu'un. Utiliser une couche multipoints avec plusieurs points par entité ne renvoie pas de résultats appropriés.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../pointSamplingToolUi.ui" line="233"/>
         <source>Status:</source>
-        <translation>Status</translation>
+        <translation>Status:</translation>
     </message>
     <message>
         <location filename="../pointSamplingToolUi.ui" line="260"/>
         <source>Complete the input fields and press OK...</source>
-        <translation>Compléter les champs en entrée et appuyer sur OK</translation>
+        <translation>Compléter les entrées et appuyer sur OK</translation>
     </message>
 </context>
 </TS>
