@@ -1,26 +1,17 @@
-# This file contains metadata for your plugin. Beginning
-# with version 1.8 this is the preferred way to supply information about a
-# plugin. The current method of embedding metadata in __init__.py will
-# be supported until version 2.0
-
-# This file should be included when you package your plugin.
-
-# Mandatory items:
-
-
 [general]
+
 name=Point sampling tool
+
 description=Samples polygon attributes and raster values from multiple layers at specified sampling points
+
 description[pl]=Próbkuje atrybuty poligonów i/lub wartości rastra (również z wielu warstw naraz) w podanych punktach.
+
 about=The Point Sampling Tool Plugin collects polygon attributes and raster values from multiple layers at specified sampling points. You need a point layer with locations of sampling points and at least one polygon or raster layer to probe values from. The plugin creates a new point layer with locations given by the sampling points and attributes taken from all the underlying polygons or/and raster cells. Please use Control and Shift keys in order to select multiple columns and bands. Note this tool is not compatible with mulitipoint sources, unless each multipoint contains exactly one point. Using multipoint samples that contain more points in multipoints may produce unreliable results.
-version=0.5.1
+
+version=0.5.2
+
 qgisMinimumVersion=3.0
 
-# Optional items:
-
-# changelog=
-
-# tags are comma separated with spaces allowed
 tags=sample, point, vector, raster
 
 homepage=http://github.com/borysiasty/pointsamplingtool
@@ -28,11 +19,9 @@ tracker=http://github.com/borysiasty/pointsamplingtool/issues
 repository=http://github.com/borysiasty/pointsamplingtool
 
 icon=pointSamplingToolIcon.png
-experimental=False
 
-# deprecated flag (applies to the whole plugin, not just a single version
+experimental=False
 deprecated=False
 
-# Author contact information
 author=Borys Jurgiel
 email=qgis@borysjurgiel.pl

@@ -1,3 +1,6 @@
+ver 0.5.2
+Added French translation. Patch by Sebastien Peillet
+
 ver 0.5.1
 Fixed wrong import.
 Add table name to the layer name when opening GeoPackage with multiple tables.

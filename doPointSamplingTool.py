@@ -200,7 +200,7 @@ class Dialog(QDialog, Ui_Dialog):
   # cut to 10 characters if exceed
   if len(updatedText) > 10:
    self.updateFieldsTable()
-   QMessageBox.information(self, "Point Sampling Tool", "Name length can't exceed 10 chars, so it has been truncated.")
+   QMessageBox.information(self, self.tr("Point Sampling Tool"), self.tr("Name length can't exceed 10 chars, so it has been truncated."))
    # This message box may to make some confusion, if user press OK while "too long name" is still under edition.
    # In this case, the message box pops up (correctly) and then the OK button becomes pressed, but the self.accept method is not called.
    # This pressed button with no action may to look like a hang up.
@@ -215,8 +215,8 @@ class Dialog(QDialog, Ui_Dialog):
  def outFile(self): # by Carson Farmer 2008
   # display file dialog for output file
   self.outShape.clear()
-  outName, _ = QFileDialog().getSaveFileName(self, "Output file", ".",
-                                             "GeoPackages(*.gpkg);;Comma separated values (*.csv);;Shapefiles (*.shp)",
+  outName, _ = QFileDialog().getSaveFileName(self, self.tr("Output file"), ".",
+                                             self.tr("GeoPackages(*.gpkg);;Comma separated values (*.csv);;Shapefiles (*.shp)"),
                                              options = QFileDialog.DontConfirmOverwrite)
   outPath = QFileInfo(outName).absoluteFilePath()
   if not outPath.upper().endswith('.GPKG') and not outPath.upper().endswith('.CSV') and not outPath.upper().endswith('.SHP'):
@@ -229,7 +229,7 @@ class Dialog(QDialog, Ui_Dialog):
 
  def accept(self): # Called when "OK" button pressed (based on the Carson Farmer's PointsInPoly Plugin, 2008)
   # check if all fields are filled up
-  self.statusLabel.setText("Check input values, please!")
+  self.statusLabel.setText(self.tr("Check input values, please!"))
   nothingSelected = True
   for i in self.polyItems:
    for j in range(1, len(self.polyItems[i])):
@@ -242,49 +242,49 @@ class Dialog(QDialog, Ui_Dialog):
 
   if self.inSample.currentText() == "":
    self.tabWidget.setCurrentIndex(0)
-   QMessageBox.information(self, "Point Sampling Tool", "Please select vector layer containing the sampling points")
+   QMessageBox.information(self, self.tr("Point Sampling Tool"), self.tr("Please select vector layer containing the sampling points"))
    return
   if nothingSelected:
    self.tabWidget.setCurrentIndex(0)
-   QMessageBox.information(self, "Point Sampling Tool", "Please select at least one polygon attribute or raster band")
+   QMessageBox.information(self, self.tr("Point Sampling Tool"), self.tr("Please select at least one polygon attribute or raster band"))
    return
   if self.outShape.text() == "":
    self.tabWidget.setCurrentIndex(0)
-   QMessageBox.information(self, "Point Sampling Tool", "Please specify output file name")
+   QMessageBox.information(self, self.tr("Point Sampling Tool"), self.tr("Please specify output file name"))
    return
   # check if destination field names are unique
   if not self.testFieldsNames(self.fields):
    self.updateFieldsTable()
    self.tabWidget.setCurrentIndex(1)
-   QMessageBox.warning(self, "Point Sampling Tool", "At least two field names are the same!\nPlease type unique names.")
+   QMessageBox.warning(self, self.tr("Point Sampling Tool"), self.tr("At least two field names are the same!\nPlease type unique names."))
    return
 
   # Check if there a CRS mismatch
 
   pointLayerSrid = list(self.sampItems.values())[0][0].crs().postgisSrid()
-  msg = '''<html>All layers must have the same coordinate refere system. The <b>%s</b> layer seems to have different CRS id (<b>%d</b>)
-            than the point layer (<b>%d</b>). If they are two different CRSes, you need to reproject one of the layers first,
-            otherwise results will be wrong.<br/>
-            However, if you are sure both CRSes are the same, and they are just improperly recognized, you can safely continue.
-            Do you want to continue?</html>'''
+  msg = self.tr('''<html>All layers must have the same coordinate refere system. The <b>%s</b> layer seems to have different CRS id (<b>%d</b>)
+                   than the point layer (<b>%d</b>). If they are two different CRSes, you need to reproject one of the layers first,
+                   otherwise results will be wrong.<br/>
+                   However, if you are sure both CRSes are the same, and they are just improperly recognized, you can safely continue.
+                   Do you want to continue?</html>''')
   for i in self.polyItems:
    for j in range(1, len(self.polyItems[i])):
     if self.polyItems[i][j][2]:
      layerSrid = self.polyItems[i][0].crs().postgisSrid()
      if layerSrid != pointLayerSrid:
-      if QMessageBox.question(self, "Point Sampling Tool: layer CRS mismatch!", msg % (i, layerSrid, pointLayerSrid), QMessageBox.Yes | QMessageBox.No) != QMessageBox.Yes:
+      if QMessageBox.question(self, self.tr("Point Sampling Tool: layer CRS mismatch!"), msg % (i, layerSrid, pointLayerSrid), QMessageBox.Yes | QMessageBox.No) != QMessageBox.Yes:
        return
   for i in self.rastItems:
    for j in range(1, len(self.rastItems[i])):
     if self.rastItems[i][j][2]:
      layerSrid = self.rastItems[i][0].crs().postgisSrid()
      if layerSrid != pointLayerSrid:
-      if QMessageBox.question(self, "Point Sampling Tool: layer CRS mismatch!", msg % (i, layerSrid, pointLayerSrid), QMessageBox.Yes | QMessageBox.No) != QMessageBox.Yes:
+      if QMessageBox.question(self, self.tr("Point Sampling Tool: layer CRS mismatch!"), msg % (i, layerSrid, pointLayerSrid), QMessageBox.Yes | QMessageBox.No) != QMessageBox.Yes:
        return
 
   if True:
    # all tests passed! Let's go on
-   self.statusLabel.setText("Processing the output file name...")
+   self.statusLabel.setText(self.tr("Processing the output file name..."))
    self.repaint()
    outPath = self.outShape.text()
    outPath = outPath.replace("\\","/")
@@ -295,23 +295,23 @@ class Dialog(QDialog, Ui_Dialog):
    oldFile = QFile(outPath)
    if oldFile.exists():
     if not outPath.upper().endswith('.GPKG'):
-     if QMessageBox.question(self, "Point Sampling Tool", "File %s already exists. Do you want to overwrite?" % outName) == QMessageBox.No:
+     if QMessageBox.question(self, self.tr("Point Sampling Tool"), self.tr("File %s already exists. Do you want to overwrite?") % outName) == QMessageBox.No:
       # return to filling the input fields
       self.outShape.clear()
-      self.statusLabel.setText("Fill up the input fields, please.")
+      self.statusLabel.setText(self.tr("Fill up the input fields, please."))
       self.repaint()
       return
     else:
-     msg = """Please provide <b>table name</b> for your layer.<br/>
-              <b>WARNING: </b>Database %s already exists. If you select a table existing in it, the table will be overwritten."""% outName
+     msg = self.tr("""Please provide <b>table name</b> for your layer.<br/>
+                      <b>WARNING: </b>Database %s already exists. If you select a table existing in it, the table will be overwritten.""") % outName
      tableName, result = QInputDialog.getText(self, "Point Sampling Tool", msg, text=outName[:-5])
      if not result:
       # return to filling the input fields
       self.outShape.clear()
-      self.statusLabel.setText("Fill up the input fields, please.")
+      self.statusLabel.setText(self.tr("Fill up the input fields, please."))
       self.repaint()
       return
-   self.statusLabel.setText("Processing...")
+   self.statusLabel.setText(self.tr("Processing..."))
    self.repaint()
    # execute main function
    if not self.sampling(outPath, tableName):
@@ -330,10 +330,10 @@ class Dialog(QDialog, Ui_Dialog):
       if hasattr(l, 'source') and l.source() == self.vlayer.source():
        QgsProject.instance().removeMapLayer(l)
      QgsProject.instance().addMapLayer(self.vlayer)
-     self.statusLabel.setText("OK. The new layer has been added to the map.")
+     self.statusLabel.setText(self.tr("OK. The new layer has been added to the map."))
     else:
-     self.statusLabel.setText("Error loading the created layer")
-     QMessageBox.warning(self, "Point Sampling Tool", "The new layer seems to be created, but is invalid.\nIt won't be loaded.")
+     self.statusLabel.setText(self.tr("Error loading the created layer"))
+     QMessageBox.warning(self, self.tr("Point Sampling Tool"), self.tr("The new layer seems to be created, but is invalid.\nIt won't be loaded."))
 
 
 
@@ -365,7 +365,7 @@ class Dialog(QDialog, Ui_Dialog):
         memLayer.addAttribute(field)
     memLayer.commitChanges()
 
-    self.statusLabel.setText("Writing data to the new layer...")
+    self.statusLabel.setText(self.tr("Writing data to the new layer..."))
     self.repaint()
     # process point after point...
     pointFeat = QgsFeature()
@@ -374,7 +374,7 @@ class Dialog(QDialog, Ui_Dialog):
     for pointFeat in pointProvider.getFeatures():
         np += 1
         if snp<100 or ( snp<5000 and ( np // 10.0 == np / 10.0 ) ) or ( np // 100.0 == np / 100.0 ): # display each or every 10th or every 100th point:
-            self.statusLabel.setText("Processing point %s of %s" % (np, snp))
+            self.statusLabel.setText(self.tr("Processing point %s of %s") % (np, snp))
             self.repaint()
         # convert multipoint[0] to point
         pointGeom = pointFeat.geometry()
@@ -447,11 +447,11 @@ class Dialog(QDialog, Ui_Dialog):
             so.layerName = tableName
     result, errMsg = QgsVectorFileWriter.writeAsVectorFormat(memLayer, outPath, so)
     if result:
-     QMessageBox.critical(self, "Point sampling tool", errMsg)
+     QMessageBox.critical(self, self.tr("Point sampling tool"), errMsg)
      return False
     else:
      del memLayer
-     self.statusLabel.setText("The new layer has been created.")
+     self.statusLabel.setText(self.tr("The new layer has been created."))
      return True
 
 
