@@ -1,5 +1,8 @@
-ver 0.5.2
+ver 0.5.3
 Don't crop output field names to 10 characters if the output file is GeoPackage or CSV
+
+ver 0.5.2
+Added French translation. Patch by Sebastien Peillet.
 
 ver 0.5.1
 Fixed wrong import.
