@@ -32,8 +32,8 @@ class pointSamplingTool(object):
 
  def __init__(self, iface):
     self.iface = iface
-    
-    if QSettings().value('locale/overrideFlag'):
+
+    if QSettings().value('locale/overrideFlag', type=bool):
         locale = QSettings().value('locale/userLocale')
     else:
         locale = QLocale.system().name()

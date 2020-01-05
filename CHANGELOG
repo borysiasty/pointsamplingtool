@@ -1,3 +1,6 @@
+ver 0.5.3
+Fixed errors with MultiPoint input vector layer. Patch by Andrea Giudiceandrea.
+
 ver 0.5.2
 Added French translation. Patch by Sebastien Peillet.
 
