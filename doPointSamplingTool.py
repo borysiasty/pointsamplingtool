@@ -378,10 +378,8 @@ class Dialog(QDialog, Ui_Dialog):
             self.repaint()
         # convert multipoint[0] to point
         pointGeom = pointFeat.geometry()
-        if pointGeom.wkbType() == QgsWkbTypes.MultiPoint:
-            pointPoint = pointGeom.asMultiPoint()[0]
-        else:
-            pointPoint = pointGeom.asPoint()
+        pointGeom.convertToSingleType()
+        pointPoint = pointGeom.asPoint()
         outFeat = QgsFeature()
         outFeat.setGeometry(pointGeom)
         # ...and next loop inside: field after field
