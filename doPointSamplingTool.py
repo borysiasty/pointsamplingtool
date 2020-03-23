@@ -107,10 +107,10 @@ class Dialog(QDialog, Ui_Dialog):
 #  self.inData.addItem(str(self.sampItems[i][0].name()) + " (X coordinate)")
 #  self.inData.addItem(str(self.sampItems[i][0].name()) + " (Y coordinate)")
 
-  for i in self.polyItems:
+  for i in sorted(self.polyItems):
    for j in range(1, len(self.polyItems[i])):
     self.inData.addItem(str(self.polyItems[i][0].name()) + " : " + str(self.polyItems[i][j][0]) + " (polygon)")
-  for i in self.rastItems:
+  for i in sorted(self.rastItems):
    for j in range(1, len(self.rastItems[i])):
     self.inData.addItem(str(self.rastItems[i][0].name()) + " : "+ str(self.rastItems[i][j][0]) + " (raster)")
   self.updateFieldsTable()
@@ -159,7 +159,7 @@ class Dialog(QDialog, Ui_Dialog):
     self.fieldsTable.setItem(n,0,cell)
     self.fieldsTable.setItem(n,1,QTableWidgetItem(str(self.sampItems[i][j][1])))
     n += 1
-  for i in self.polyItems:
+  for i in sorted(self.polyItems):
    for j in range(1, len(self.polyItems[i])):
     if self.polyItems[i][j][2]:
      self.fields += [["poly",i,j]]
@@ -169,7 +169,7 @@ class Dialog(QDialog, Ui_Dialog):
      self.fieldsTable.setItem(n,0,cell)
      self.fieldsTable.setItem(n,1,QTableWidgetItem(str(self.polyItems[i][j][1])))
      n += 1
-  for i in self.rastItems:
+  for i in sorted(self.rastItems):
    for j in range(1, len(self.rastItems[i])):
     if self.rastItems[i][j][2]:
      self.fields += [["rast",i,j]]
