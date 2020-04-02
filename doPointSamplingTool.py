@@ -107,10 +107,10 @@ class Dialog(QDialog, Ui_Dialog):
 #  self.inData.addItem(str(self.sampItems[i][0].name()) + " (X coordinate)")
 #  self.inData.addItem(str(self.sampItems[i][0].name()) + " (Y coordinate)")
 
-  for i in self.polyItems:
+  for i in sorted(self.polyItems):
    for j in range(1, len(self.polyItems[i])):
     self.inData.addItem(str(self.polyItems[i][0].name()) + " : " + str(self.polyItems[i][j][0]) + " (polygon)")
-  for i in self.rastItems:
+  for i in sorted(self.rastItems):
    for j in range(1, len(self.rastItems[i])):
     self.inData.addItem(str(self.rastItems[i][0].name()) + " : "+ str(self.rastItems[i][j][0]) + " (raster)")
   self.updateFieldsTable()
@@ -130,7 +130,7 @@ class Dialog(QDialog, Ui_Dialog):
       self.sampItems[i][j][2] = False
     n += 1
   # mark selected polygon items
-  for i in self.polyItems:
+  for i in sorted(self.polyItems):
    for j in range(1, len(self.polyItems[i])):
     if self.inData.item(n) and self.inData.item(n).isSelected():
      self.polyItems[i][j][2] = True
@@ -138,7 +138,7 @@ class Dialog(QDialog, Ui_Dialog):
      self.polyItems[i][j][2] = False
     n += 1
   # mark selected raster items (don't zero n; it's one list)
-  for i in self.rastItems:
+  for i in sorted(self.rastItems):
    for j in range(1, len(self.rastItems[i])):
     if self.inData.item(n) and self.inData.item(n).isSelected():
      self.rastItems[i][j][2] = True
@@ -159,7 +159,7 @@ class Dialog(QDialog, Ui_Dialog):
     self.fieldsTable.setItem(n,0,cell)
     self.fieldsTable.setItem(n,1,QTableWidgetItem(str(self.sampItems[i][j][1])))
     n += 1
-  for i in self.polyItems:
+  for i in sorted(self.polyItems):
    for j in range(1, len(self.polyItems[i])):
     if self.polyItems[i][j][2]:
      self.fields += [["poly",i,j]]
@@ -169,7 +169,7 @@ class Dialog(QDialog, Ui_Dialog):
      self.fieldsTable.setItem(n,0,cell)
      self.fieldsTable.setItem(n,1,QTableWidgetItem(str(self.polyItems[i][j][1])))
      n += 1
-  for i in self.rastItems:
+  for i in sorted(self.rastItems):
    for j in range(1, len(self.rastItems[i])):
     if self.rastItems[i][j][2]:
      self.fields += [["rast",i,j]]
@@ -231,11 +231,11 @@ class Dialog(QDialog, Ui_Dialog):
   # check if all fields are filled up
   self.statusLabel.setText(self.tr("Check input values, please!"))
   nothingSelected = True
-  for i in self.polyItems:
+  for i in sorted(self.polyItems):
    for j in range(1, len(self.polyItems[i])):
     if self.polyItems[i][j][2]:
      nothingSelected = False
-  for i in self.rastItems:
+  for i in sorted(self.rastItems):
    for j in range(1, len(self.rastItems[i])):
     if self.rastItems[i][j][2]:
      nothingSelected = False
@@ -267,14 +267,14 @@ class Dialog(QDialog, Ui_Dialog):
                    otherwise results will be wrong.<br/>
                    However, if you are sure both CRSes are the same, and they are just improperly recognized, you can safely continue.
                    Do you want to continue?</html>''')
-  for i in self.polyItems:
+  for i in sorted(self.polyItems):
    for j in range(1, len(self.polyItems[i])):
     if self.polyItems[i][j][2]:
      layerSrid = self.polyItems[i][0].crs().postgisSrid()
      if layerSrid != pointLayerSrid:
       if QMessageBox.question(self, self.tr("Point Sampling Tool: layer CRS mismatch!"), msg % (i, layerSrid, pointLayerSrid), QMessageBox.Yes | QMessageBox.No) != QMessageBox.Yes:
        return
-  for i in self.rastItems:
+  for i in sorted(self.rastItems):
    for j in range(1, len(self.rastItems[i])):
     if self.rastItems[i][j][2]:
      layerSrid = self.rastItems[i][0].crs().postgisSrid()
