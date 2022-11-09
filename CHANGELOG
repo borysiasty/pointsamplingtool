@@ -1,3 +1,6 @@
+ver 0.5.4
+Drop 10 char limit in output field names. Patch by Abel Paz.
+
 ver 0.5.3
 Fixed errors with MultiPoint input vector layer. Patch by Andrea Giudiceandrea.
 
