@@ -86,10 +86,10 @@ class Dialog(QDialog, Ui_Dialog):
     for j in range(layer.bandCount()):
      if layer.bandCount() == 1:
       name1 = layer.bandName(j+1)
-      name2 = layer.name()[:10]
+      name2 = layer.name()
      else:
       name1 = layer.bandName(j+1)
-      name2 = layer.name()[:8] + "_" + str(j+1)
+      name2 = layer.name() + "_" + str(j+1)
      theItem += [[name1, name2, False]]
     self.rastItems[str(layer.name())] = theItem
   self.updateFieldsList()
@@ -192,15 +192,15 @@ class Dialog(QDialog, Ui_Dialog):
   # update items dictionaries
   updatedText = str(updatedItem.text())
   if self.fields[n][0] == "point":
-   self.sampItems[self.fields[n][1]][self.fields[n][2]][1] = updatedText[:10]
+   self.sampItems[self.fields[n][1]][self.fields[n][2]][1] = updatedText
   elif self.fields[n][0] == "poly":
-   self.polyItems[self.fields[n][1]][self.fields[n][2]][1] = updatedText[:10]
+   self.polyItems[self.fields[n][1]][self.fields[n][2]][1] = updatedText
   else:
-   self.rastItems[self.fields[n][1]][self.fields[n][2]][1] = updatedText[:10]
+   self.rastItems[self.fields[n][1]][self.fields[n][2]][1] = updatedText
   # cut to 10 characters if exceed
-  if len(updatedText) > 10:
-   self.updateFieldsTable()
-   QMessageBox.information(self, self.tr("Point Sampling Tool"), self.tr("Name length can't exceed 10 chars, so it has been truncated."))
+#   if len(updatedText) > 10:
+#    self.updateFieldsTable()
+#    QMessageBox.information(self, self.tr("Point Sampling Tool"), self.tr("Name length can't exceed 10 chars, so it has been truncated."))
    # This message box may to make some confusion, if user press OK while "too long name" is still under edition.
    # In this case, the message box pops up (correctly) and then the OK button becomes pressed, but the self.accept method is not called.
    # This pressed button with no action may to look like a hang up.
