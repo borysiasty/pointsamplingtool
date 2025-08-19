@@ -64,9 +64,11 @@ class pointSamplingTool(object):
             QCoreApplication.installTranslator(self.translator)
 
     def initGui(self):
+        icon_path = os.path.join(os.path.dirname(__file__), "pointSamplingToolIcon.png")
+
         # create action
         self.action = QAction(
-            QIcon(":/plugins/pointSamplingTool/pointSamplingToolIcon.png"),
+            QIcon(icon_path),
             QCoreApplication.translate("Point Sampling Tool", "Point Sampling Tool"),
             self.iface.mainWindow(),
         )
