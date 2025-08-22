@@ -32,6 +32,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 
 from . import doPointSamplingTool
+from . import resources
 
 QT_VERSION_INT = int(QT_VERSION_STR.split(".")[0])
 
@@ -64,11 +65,9 @@ class pointSamplingTool(object):
             QCoreApplication.installTranslator(self.translator)
 
     def initGui(self):
-        icon_path = os.path.join(os.path.dirname(__file__), "pointSamplingToolIcon.png")
-
         # create action
         self.action = QAction(
-            QIcon(icon_path),
+            QIcon(":/plugins/pointSamplingTool/pointSamplingToolIcon.png"),
             QCoreApplication.translate("Point Sampling Tool", "Point Sampling Tool"),
             self.iface.mainWindow(),
         )
