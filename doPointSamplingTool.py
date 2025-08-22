@@ -35,7 +35,7 @@ from qgis.core import (
     QgsWkbTypes,
 )
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QT_VERSION_STR, QFile, QFileInfo, Qt, QVariant
+from qgis.PyQt.QtCore import QFile, QFileInfo, Qt, QVariant
 from qgis.PyQt.QtWidgets import (
     QDialog,
     QFileDialog,
@@ -47,9 +47,6 @@ from qgis.PyQt.QtWidgets import (
 Ui_Dialog = uic.loadUiType(
     os.path.join(os.path.dirname(__file__), "pointSamplingToolUi.ui")
 )[0]
-
-QT_VERSION_INT = int(QT_VERSION_STR.split(".")[0])
-QT_CHECKED = Qt.Checked if QT_VERSION_INT <= 5 else Qt.CheckState.Checked
 
 
 class Dialog(QDialog, Ui_Dialog):
@@ -66,7 +63,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.inSample.currentIndexChanged.connect(self.updateFieldsList)
         self.inData.itemSelectionChanged.connect(self.updateFieldsTable)
         self.fieldsTable.cellChanged.connect(self.fieldNameChanged)
-        self.addToMapCanvas.setCheckState(QT_CHECKED)
+        self.addToMapCanvas.setCheckState(Qt.CheckState.Checked)
         mapCanvas = self.iface.mapCanvas()
         # init dictionaries of items:
         self.sampItems = {}
@@ -186,7 +183,7 @@ class Dialog(QDialog, Ui_Dialog):
                     + " : "
                     + str(self.sampItems[i][j][0])
                 )
-                cell.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+                cell.setFlags(Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled)
                 self.fieldsTable.setItem(n, 0, cell)
                 self.fieldsTable.setItem(
                     n, 1, QTableWidgetItem(str(self.sampItems[i][j][1]))
@@ -202,7 +199,7 @@ class Dialog(QDialog, Ui_Dialog):
                         + " : "
                         + str(self.polyItems[i][j][0])
                     )
-                    cell.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+                    cell.setFlags(Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled)
                     self.fieldsTable.setItem(n, 0, cell)
                     self.fieldsTable.setItem(
                         n, 1, QTableWidgetItem(str(self.polyItems[i][j][1]))
@@ -218,7 +215,7 @@ class Dialog(QDialog, Ui_Dialog):
                         + " : "
                         + str(self.rastItems[i][j][0])
                     )
-                    cell.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
+                    cell.setFlags(Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled)
                     self.fieldsTable.setItem(n, 0, cell)
                     self.fieldsTable.setItem(
                         n, 1, QTableWidgetItem(str(self.rastItems[i][j][1]))
@@ -268,7 +265,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.tr(
                 "GeoPackages(*.gpkg);;Comma separated values (*.csv);;Shapefiles (*.shp)"
             ),
-            options=QFileDialog.DontConfirmOverwrite,
+            options=QFileDialog.Option.DontConfirmOverwrite,
         )
         outPath = QFileInfo(outName).absoluteFilePath()
         if (
@@ -428,7 +425,7 @@ class Dialog(QDialog, Ui_Dialog):
             if not self.sampling(outPath, tableName):
                 return
             self.outShape.clear()
-            if self.addToMapCanvas.checkState() == Qt.Checked:
+            if self.addToMapCanvas.checkState() == Qt.CheckState.Checked:
                 uri = outPath
                 layerName = outName
                 if tableName:
