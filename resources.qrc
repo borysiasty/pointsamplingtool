@@ -1,5 +1,0 @@
-<RCC>
- <qresource prefix="/plugins/pointSamplingTool">
-  <file>pointSamplingToolIcon.png</file>
- </qresource>
-</RCC>
