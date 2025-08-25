@@ -28,5 +28,5 @@
 #---------------------------------------------------------------------
 
 def classFactory(iface):
-    from .pointSamplingTool import pointSamplingTool
-    return pointSamplingTool(iface)
+    from .Plugin import Plugin
+    return Plugin(iface)

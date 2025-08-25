@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # ***************************************************************************
 # Point Sampling Tool
 #
@@ -45,11 +43,11 @@ from qgis.PyQt.QtWidgets import (
 )
 
 Ui_Dialog = uic.loadUiType(
-    os.path.join(os.path.dirname(__file__), "pointSamplingToolUi.ui")
+    os.path.join(os.path.dirname(__file__), "PointSamplingToolDialogBase.ui")
 )[0]
 
 
-class Dialog(QDialog, Ui_Dialog):
+class PointSamplingToolDialog(QDialog, Ui_Dialog):
     sampItems = {}  # {name1 : [layer1, [field_src,field_dsn,Active?], [field_src,field_dsn,Active?], ...] , name2 : [layer2, ...] }
     polyItems = {}  # {name1 : [layer1, [field_src,field_dsn,Active?], [field_src,field_dsn,Active?], ...] , name2 : [layer2, ...] }
     rastItems = {}  # {name1 : [layer1, [band_name,field_dsn,Active?], [band_name,field_dsn,Active?], ...] , name2 : [layer2, ...] }
@@ -278,9 +276,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.outShape.clear()
             self.outShape.insert(outPath)
 
-    def accept(
-        self,
-    ):  # Called when "OK" button pressed (based on the Carson Farmer's PointsInPoly Plugin, 2008)
+    def accept(self):
         # check if all fields are filled up
         self.statusLabel.setText(self.tr("Check input values, please!"))
         nothingSelected = True
@@ -348,9 +344,8 @@ class Dialog(QDialog, Ui_Dialog):
                                 self,
                                 self.tr("Point Sampling Tool: layer CRS mismatch!"),
                                 msg % (i, layerSrid, pointLayerSrid),
-                                QMessageBox.Yes | QMessageBox.No,
                             )
-                            != QMessageBox.Yes
+                            != QMessageBox.StandardButton.Yes
                         ):
                             return
         for i in self.rastItems:
@@ -363,9 +358,8 @@ class Dialog(QDialog, Ui_Dialog):
                                 self,
                                 self.tr("Point Sampling Tool: layer CRS mismatch!"),
                                 msg % (i, layerSrid, pointLayerSrid),
-                                QMessageBox.Yes | QMessageBox.No,
                             )
-                            != QMessageBox.Yes
+                            != QMessageBox.StandardButton.Yes
                         ):
                             return
 
@@ -393,7 +387,7 @@ class Dialog(QDialog, Ui_Dialog):
                             self.tr("File %s already exists. Do you want to overwrite?")
                             % outName,
                         )
-                        == QMessageBox.No
+                        == QMessageBox.StandardButton.No
                     ):
                         # return to filling the input fields
                         self.outShape.clear()

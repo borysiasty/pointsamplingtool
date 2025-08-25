@@ -1,3 +1,7 @@
+ver 0.5.5
+QT6 support and a partial refactoring. Patch by Keita Uemori.
+
+
 ver 0.5.4
 Drop 10 char limit in output field names. Patch by Abel Paz.
 

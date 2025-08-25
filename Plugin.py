@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # ***************************************************************************
 # Point Sampling Tool
 #
@@ -22,7 +20,6 @@ import os
 from builtins import object
 
 from qgis.PyQt.QtCore import (
-    QT_VERSION_STR,
     QCoreApplication,
     QLocale,
     QSettings,
@@ -31,20 +28,11 @@ from qgis.PyQt.QtCore import (
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 
-from . import doPointSamplingTool
+from .PointSamplingToolDialog import PointSamplingToolDialog
 from . import resources
 
-QT_VERSION_INT = int(QT_VERSION_STR.split(".")[0])
 
-
-def exec_dialog(dialog):
-    if QT_VERSION_INT <= 5:
-        return dialog.exec_()
-    else:
-        return dialog.exec()
-
-
-class pointSamplingTool(object):
+class Plugin(object):
     def __init__(self, iface):
         self.iface = iface
 
@@ -93,5 +81,4 @@ class pointSamplingTool(object):
 
     def run(self):
         # create and show a configuration dialog or something similar
-        dialoga = doPointSamplingTool.Dialog(self.iface)
-        exec_dialog(dialoga)
+        PointSamplingToolDialog(self.iface).exec()
