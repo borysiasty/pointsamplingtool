@@ -25,3 +25,5 @@ deprecated=False
 
 author=Borys Jurgiel
 email=qgis@borysjurgiel.pl
+
+supportsQt6=True
