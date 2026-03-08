@@ -1,3 +1,6 @@
+ver 0.5.6
+Fix QGIS4 compatibility
+
 ver 0.5.5
 QT6 support and a partial refactoring. Patch by Keita Uemori.
 
