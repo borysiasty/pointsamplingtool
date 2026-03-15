@@ -29,7 +29,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 
 from .PointSamplingToolDialog import PointSamplingToolDialog
-from . import resources
+from . import resources  # noqa: F401
 
 
 class Plugin(object):

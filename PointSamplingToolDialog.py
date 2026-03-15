@@ -481,7 +481,7 @@ class PointSamplingToolDialog(QDialog, Ui_Dialog):
                     5,
                     "",
                 )
-                ##### Better data type fit will be implemented in next versions
+                # #### Better data type fit will be implemented in next versions
             fieldList.append(field)
         # create temporary memory layer (as it's currently impossible to set GPKG table name when writting features to QgsVectorFileWriter directly)
         memLayer = QgsVectorLayer(
@@ -581,7 +581,7 @@ class PointSamplingToolDialog(QDialog, Ui_Dialog):
                         bandNo = field[2]
                         attr = float(
                             rastSample[bandNo]
-                        )  ##### !! float() - I HAVE TO IMPLEMENT RASTER TYPE HANDLING!!!!
+                        )  # #### !! float() - I HAVE TO IMPLEMENT RASTER TYPE HANDLING!!!!
                     except Exception:  # point is out of raster extent
                         attr = None
                     attrs += [attr]
